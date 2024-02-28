@@ -42,6 +42,10 @@ public class MyController {
 	public Course saveCourse(@RequestBody Course course) {
 		return courseService.save(course);
 	}
+	@GetMapping("/")
+	public String start() {
+		return "hello";
+	}
 
 	@GetMapping("/courses")
 	public List<Course> getAllCourses() {
