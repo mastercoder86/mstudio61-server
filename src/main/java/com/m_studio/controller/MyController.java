@@ -44,7 +44,6 @@ public class MyController {
 		return courseService.save(course);
 	}
 	@GetMapping("/")
-	@ResponseBody
 	public String start() {
 		return "hello";
 	}
