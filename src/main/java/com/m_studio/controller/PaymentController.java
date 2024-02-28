@@ -20,6 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.razorpay.Order;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
+
+import jakarta.persistence.EntityManager;
+
 import com.m_studio.dao.CourseRepository;
 import com.m_studio.dao.MyOrderRepository;
 
@@ -46,6 +49,7 @@ public class PaymentController {
 
 	@PostMapping("/create_order")
 	public String createOrder(@RequestBody Map<String, Object> data) {
+		
 		System.out.println("Hey order function ex");
 		System.out.println(data);
 		int amount = Integer.parseInt(data.get("amount").toString());
@@ -90,6 +94,7 @@ public class PaymentController {
 			myOrder.setReceipt(order.get("receipt"));
 
 			myOrderRepository.save(myOrder);
+			
 			//return order.toString();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
