@@ -26,7 +26,7 @@ import com.m_studio.service.EmailService;
 import jakarta.validation.Valid;
 
 @RestController
-@CrossOrigin(origins = "https://mstudio61.vercel.app/")
+@CrossOrigin(origins = "*")
 public class MyController {
 
 	@Autowired
