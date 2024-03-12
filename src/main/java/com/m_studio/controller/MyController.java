@@ -122,7 +122,13 @@ public class MyController {
 		User user1 = userRepository.findByEmailAndPassword(user.getEmail(), user.getPassword());
 		if(user1!=null) {
 			String name = user1.getName();
-			loginValues.put("name", name.substring(0,name.indexOf(" ")));
+			if(name.trim().contains(" ")) {
+				loginValues.put("name", name.substring(0,name.indexOf(" ")));
+			}
+			else {
+				loginValues.put("name", name);
+			}
+			
 			loginValues.put("credentials", "good credentials");
 			loginValues.put("username", user1.getEmail());
 			loginValues.put("password",user1.getPassword());

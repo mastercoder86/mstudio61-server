@@ -1,0 +1,17 @@
+com\m_studio\MStudio6Application.class
+com\m_studio\service\CourseService.class
+com\m_studio\controller\MyController.class
+com\m_studio\controller\PaymentController.class
+com\m_studio\service\EmailService.class
+com\m_studio\entities\User.class
+com\m_studio\entities\Course.class
+com\m_studio\config\SecurityConfiguration.class
+com\m_studio\entities\MyOrder.class
+com\m_studio\entities\Registration.class
+com\m_studio\service\CourseServiceImpl.class
+com\m_studio\entities\Query.class
+com\m_studio\dao\MyOrderRepository.class
+com\m_studio\service\EmailService$1.class
+com\m_studio\dao\UserRepository.class
+com\m_studio\config\DataSourceConfig.class
+com\m_studio\dao\CourseRepository.class
