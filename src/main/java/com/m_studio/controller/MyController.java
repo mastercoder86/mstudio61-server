@@ -38,15 +38,16 @@ public class MyController {
 	private UserRepository userRepository;
 	@Autowired
 	private CourseRepository courseRepository;
-
+	@ResponseBody
 	@PostMapping("/courses")
 	public Course saveCourse(@RequestBody Course course) {
 		return courseService.save(course);
 	}
-	@GetMapping("/")
-	public String start() {
-		return "hello";
-	}
+	
+//	@GetMapping("/")
+//	public String start() {
+//		return "hello";
+//	}
 
 	@GetMapping("/courses")
 	public List<Course> getAllCourses() {
