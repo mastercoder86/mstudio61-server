@@ -44,10 +44,11 @@ public class MyController {
 		return courseService.save(course);
 	}
 	
-//	@GetMapping("/")
-//	public String start() {
-//		return "hello";
-//	}
+	@GetMapping("/home")
+	@ResponseBody
+	public String start() {
+		return "hello";
+	}
 
 	@GetMapping("/courses")
 	public List<Course> getAllCourses() {
