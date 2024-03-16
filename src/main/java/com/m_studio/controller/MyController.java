@@ -47,6 +47,11 @@ public class MyController {
 	@GetMapping("/home")
 	@ResponseBody
 	public String start() {
+//		List<Course> courses = courseRepository.findAll();
+//		for(Course course : courses) {
+//			course.setLink("http://localhost:3000/room/1?roomID=nTO7g&role=Audience");
+//			courseRepository.save(course);
+//		}
 		return "hello";
 	}
 
@@ -141,5 +146,14 @@ public class MyController {
 		else 
 			loginValues.put("credentials", "bad credentials");
 		return loginValues;
+	}
+	@PostMapping("/getlink")
+	public String getLink(@RequestBody Map<String, Object> data) {
+		String link = data.get("link").toString();
+		int id = ((Integer)data.get("id")).intValue();
+		Course course = courseRepository.findById((long) id).get();
+		course.setLink(link);
+		courseRepository.save(course);
+		return "saved";
 	}
 }

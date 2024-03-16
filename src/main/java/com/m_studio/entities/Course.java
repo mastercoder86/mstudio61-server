@@ -36,6 +36,7 @@ public class Course {
 //	private User user;
 	private List<User> users = new ArrayList<>();
 	private boolean addedToCart;
+	private String link;
 	public long getId() {
 		return id;
 	}
@@ -91,11 +92,18 @@ public class Course {
 	public void setEnrolled(boolean enrolled) {
 		this.enrolled = enrolled;
 	}
+	
+	public String getLink() {
+		return link;
+	}
+	public void setLink(String link) {
+		this.link = link;
+	}
 	@Override
 	public String toString() {
 		return "Course [id=" + id + ", mainImage=" + mainImage + ", title=" + title + ", description=" + description
-				+ ", subImage=" + subImage + ", price=" + price + ", users=" + users + ", addedToCart=" + addedToCart
-				+ "]";
+				+ ", subImage=" + subImage + ", price=" + price + ", enrolled=" + enrolled + ", users=" + users
+				+ ", addedToCart=" + addedToCart + ", link=" + link + "]";
 	}
 	
 	
