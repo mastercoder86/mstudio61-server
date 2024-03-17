@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.m_studio.dao.CourseRepository;
+import com.m_studio.dao.RegistrationRepository;
 import com.m_studio.dao.UserRepository;
 import com.m_studio.entities.Course;
 import com.m_studio.entities.Query;
@@ -38,6 +39,8 @@ public class MyController {
 	private UserRepository userRepository;
 	@Autowired
 	private CourseRepository courseRepository;
+	@Autowired
+	private RegistrationRepository registrationRepository;
 	@ResponseBody
 	@PostMapping("/courses")
 	public Course saveCourse(@RequestBody Course course) {
@@ -65,32 +68,48 @@ public class MyController {
 	public List<String> register(@Valid @RequestBody Registration registration, BindingResult result) {
 		List<String> errors = new ArrayList<>();
 
-		if (result.hasErrors()) {
+		if (result.hasErrors() || registration.getAge().equals("") || registration.getAge().equals("---Select Age---")) {
 			List<FieldError> ferrors = result.getFieldErrors();
 			for (FieldError error : ferrors) {
 				errors.add(error.getDefaultMessage());
 			}
 
 			errors.add("bad_cred");
-		} else if (!(registration.getPassword().equals(registration.getConfirmPassword()))) {
+			
+		}
+//		else if(registration.getAge().equals("") || registration.getAge().equals("---Select Age---")) {
+//			errors.add("bad_cred");
+//		}
+		else if (!(registration.getPassword().equals(registration.getConfirmPassword()))) {
 			errors.add("password problem");
 		} else {
 			errors.add("no errors");
 			errors.add("good_cred");
-			String message = "<div style='border:5px solid red;padding:20px'>" + "<b>Name: " + registration.getName()
-					+ "</b><hr/>" + "<b>Email: " + registration.getEmail() + "</b><hr/>" + "<b>Phone: "
-					+ registration.getPhone() + "</b><hr/>" +
-
-					"</div>";
-			String subject = "Someone has registred";
-			String to = "budhakumar21@gmail.com";
-			String from = "mcoder70@gmail.com";
-			boolean mailSent = emailService.sendEmail(message, subject, to, from);
+//			String message = "<div style='border:5px solid red;padding:20px'>" + "<b>Name: " + registration.getName()
+//					+ "</b><hr/>" + "<b>Email: " + registration.getEmail() + "</b><hr/>" + "<b>Phone: "
+//					+ registration.getPhone() + "</b><hr/>" +
+//					"<b>Age: "
+//					+ registration.getAge() + "</b><hr/>" +
+//					"<b>Address: "
+//					+ registration.getAddress() + "</b><hr/>" +
+//					"<b>City: "
+//					+ registration.getCity() + "</b><hr/>" +
+//					"<b>State: "
+//					+ registration.getState() + "</b><hr/>" +
+//					"<b>PIN: "
+//					+ registration.getPinCode() + "</b><hr/>" +
+//
+//					"</div>";
+//			String subject = "Someone has registred";
+//			String to = "budhakumar21@gmail.com";
+//			String from = "mcoder70@gmail.com";
+//			boolean mailSent = emailService.sendEmail(message, subject, to, from);
 			User user = new User();
 			user.setName(registration.getName());
 			user.setEmail(registration.getEmail());
 			user.setPassword(registration.getPassword());
 			userRepository.save(user);
+			registrationRepository.save(registration);
 		}
 		return errors;
 	}

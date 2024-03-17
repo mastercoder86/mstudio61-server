@@ -25,11 +25,13 @@ import jakarta.persistence.EntityManager;
 
 import com.m_studio.dao.CourseRepository;
 import com.m_studio.dao.MyOrderRepository;
-
+import com.m_studio.dao.RegistrationRepository;
 import com.m_studio.dao.UserRepository;
 import com.m_studio.entities.Course;
 import com.m_studio.entities.MyOrder;
+import com.m_studio.entities.Registration;
 import com.m_studio.entities.User;
+import com.m_studio.service.EmailService;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -41,15 +43,17 @@ public class PaymentController {
 	private MyOrderRepository myOrderRepository;
 	@Autowired
 	private CourseRepository courseRepository;
-	
-	
+	@Autowired
+	private RegistrationRepository registrationRepository;
+	@Autowired
+	private EmailService emailService;
 	/* private String username,password; */
 
 	/* private Subscriber subscriber; */
 
 	@PostMapping("/create_order")
 	public String createOrder(@RequestBody Map<String, Object> data) {
-		
+
 		System.out.println("Hey order function ex");
 		System.out.println(data);
 		int amount = Integer.parseInt(data.get("amount").toString());
@@ -57,11 +61,10 @@ public class PaymentController {
 		String password = data.get("password").toString();
 		Order order = null;
 		try {
-			
-			
+
 //			List<Subscriber> subscribers = new ArrayList<>();
 //			List<Object> objects = new ArrayList<>();
-			
+
 			RazorpayClient client = new RazorpayClient("rzp_test_y84XqHSv5nPYer", "aRNRG1XGthPYkdebPAGg0IWN");
 			JSONObject orderRequest = new JSONObject();
 			orderRequest.put("amount", amount * 100);
@@ -94,48 +97,58 @@ public class PaymentController {
 			myOrder.setReceipt(order.get("receipt"));
 
 			myOrderRepository.save(myOrder);
-			
-			//return order.toString();
+
+			// return order.toString();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.out.println("error occured");
-			//return "Error";
+			// return "Error";
 		}
 
 //		return objects;
 		return order.toString();
-		
+
 	}
 
 	// update order
 	@PostMapping("/update_order")
 	public List<Course> updateOrder(@RequestBody Map<String, Object> data) {
 		List<Object> data1;
+		String courses = "";
 //		List<Course> courses = new ArrayList<>();
-		User user = userRepository.findByEmailAndPassword(data.get("username").toString(), data.get("password").toString());
-		//data1.add(data.get("subscribedCourses"));
-		 data1 = (List<Object>) data.get("subscribedCourses");
+		User user = userRepository.findByEmailAndPassword(data.get("username").toString(),
+				data.get("password").toString());
+		// data1.add(data.get("subscribedCourses"));
+		data1 = (List<Object>) data.get("subscribedCourses");
+		if (data1.size() > 1) {
+			for (Object course : data1) {
+				courses += ((Map<String, Object>) course).get("title").toString()+",";
+			}
+		} else {
+			courses = ((Map<String, Object>) data1.get(0)).get("title").toString();
+		}
+
 //		Course[] courses = (Course[])data.get("subscribedCourses");
-		 for(Object d1:data1) {
-			 Course c1 = new Course();
-			 c1.setId((int)((Map<String,Object>) d1).get("id"));
-			 c1.setMainImage((String)((Map<String,Object>) d1).get("mainImage"));
-			 c1.setTitle((String)((Map<String,Object>) d1).get("title"));
-			 c1.setDescription((String)((Map<String,Object>) d1).get("description"));
-			 c1.setSubImage((String)((Map<String,Object>) d1).get("subImage"));
-			 c1.setPrice((int)((Map<String,Object>) d1).get("price"));
-			 List<User> users = userRepository.findUsersByCourses(courseRepository.findById(c1.getId()).get());
-			 if(!users.isEmpty()) {
-				 c1.getUsers().addAll(users);
-			 }
-			 c1.getUsers().add(user);
-			 user.getCourses().add(c1);
+		for (Object d1 : data1) {
+			Course c1 = new Course();
+			c1.setId((int) ((Map<String, Object>) d1).get("id"));
+			c1.setMainImage((String) ((Map<String, Object>) d1).get("mainImage"));
+			c1.setTitle((String) ((Map<String, Object>) d1).get("title"));
+			c1.setDescription((String) ((Map<String, Object>) d1).get("description"));
+			c1.setSubImage((String) ((Map<String, Object>) d1).get("subImage"));
+			c1.setPrice((int) ((Map<String, Object>) d1).get("price"));
+			List<User> users = userRepository.findUsersByCourses(courseRepository.findById(c1.getId()).get());
+			if (!users.isEmpty()) {
+				c1.getUsers().addAll(users);
+			}
+			c1.getUsers().add(user);
+			user.getCourses().add(c1);
 //			 courseRepository.save(c1);
 //			 courses.add(c1);
-		 }
-		 userRepository.save(user);
-		 //userRepository.save(user);
+		}
+		userRepository.save(user);
+		// userRepository.save(user);
 //		 System.out.println("course :"+c1);
 //		System.out.println(data1.get(1));
 //		System.out.println("Here Courses :"+data1);
@@ -177,6 +190,23 @@ public class PaymentController {
 		myOrder.setStatus(data.get("status1").toString());
 		myOrderRepository.save(myOrder);
 //		System.out.println(data);
+		Registration registration = registrationRepository.findByEmail(user.getEmail());
+
+		registration.setSubscribed(true);
+		registrationRepository.save(registration);
+		String message = "<div style='border:5px solid red;padding:20px'>" + "<h1>Someone has subscribed</h1><b>Name: "
+				+ registration.getName() + "</b><hr/>" + "<b>Email: " + registration.getEmail() + "</b><hr/>"
+				+ "<b>Phone: " + registration.getPhone() + "</b><hr/>" + "<b>Age: " + registration.getAge()
+				+ "</b><hr/>" + "<b>Address: " + registration.getAddress() + "</b><hr/>" + "<b>City: "
+				+ registration.getCity() + "</b><hr/>" + "<b>State: " + registration.getState() + "</b><hr/>"
+				+ "<b>PIN: " + registration.getPinCode() + "</b><hr/>" + "<b>Courses Subscribed : " + courses
+				+ "</b><hr/>" +
+
+				"</div>";
+		String subject = "Someone has subscribed";
+		String to = "budhakumar21@gmail.com";
+		String from = "mcoder70@gmail.com";
+		boolean mailSent = emailService.sendEmail(message, subject, to, from);
 		List<Course> subscribedCourses = courseRepository.findCoursesByUsers(user);
 		return subscribedCourses;
 	}
