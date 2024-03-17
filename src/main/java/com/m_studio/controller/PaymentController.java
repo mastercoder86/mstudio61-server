@@ -204,7 +204,7 @@ public class PaymentController {
 
 				"</div>";
 		String subject = "Someone has subscribed";
-		String to = "budhakumar21@gmail.com";
+		String to = "Trilochanchapagai124@gmail.com";
 		String from = "mcoder70@gmail.com";
 		boolean mailSent = emailService.sendEmail(message, subject, to, from);
 		List<Course> subscribedCourses = courseRepository.findCoursesByUsers(user);
