@@ -70,6 +70,7 @@ public class MyController {
 
 	@PostMapping("/register")
 	public List<String> register(@Valid @RequestBody Registration registration, BindingResult result) {
+		System.out.println("reg:"+registration);
 		List<String> errors = new ArrayList<>();
 
 		if (result.hasErrors() || registration.getAge().equals("") || registration.getAge().equals("---Select Age---")) {
@@ -215,8 +216,8 @@ public class MyController {
 		return loginValues;
 	}
 	@PostMapping("/adminLogin")
-	public Map<String,Object> processAdminLogin(@RequestBody Admin admin){
-		Map<String,Object> loginValues = new HashMap<>();
+	public Map<String,String> processAdminLogin(@RequestBody Admin admin){
+		Map<String,String> loginValues = new HashMap<>();
 		Admin admin1 = adminRepository.findByUsernameAndPassword(admin.getUsername(), admin.getPassword());
 		if(admin1!=null) {
 //			String name = user1.getName();
