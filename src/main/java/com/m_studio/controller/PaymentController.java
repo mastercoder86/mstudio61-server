@@ -65,7 +65,7 @@ public class PaymentController {
 //			List<Subscriber> subscribers = new ArrayList<>();
 //			List<Object> objects = new ArrayList<>();
 
-			RazorpayClient client = new RazorpayClient("rzp_test_y84XqHSv5nPYer", "aRNRG1XGthPYkdebPAGg0IWN");
+			RazorpayClient client = new RazorpayClient("rzp_live_ME0an7eQqshvOX", "MmaoJbjuWdGl2OZDKCkjiB89");
 			JSONObject orderRequest = new JSONObject();
 			orderRequest.put("amount", amount * 100);
 			orderRequest.put("currency", "INR");
